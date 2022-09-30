@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Raw list
+{% endblock %}
+
+{% block pageTitle %}
+    Raw list :
+{% endblock %}
+
+
+{% block body %}
+    <p class="mb-2">
+        Here is the list of the persons we have in our DB. Feel free to look up for details or even edit or delete a person if information are incorrect.
+    </p>
+
+    <div class="card-columns">
+        {% for person in persons %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ person.firstname }} {{ person.lastname }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ person.age }} years old</h6>
+                    <p class="card-text">Current job : {{ person.job }}</p>
+                    <a href="{{ path('app_person_get', { id: person.id }) }}" class="card-link">Details</a>
+                    <a href="{{ path('app_person_updatef', { id: person.id}) }}" class="card-link">Edit</a>
+                    <a href="{{ path('app_person_delete', { id: person.id }) }}" class="card-link">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

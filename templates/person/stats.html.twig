@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Statistics for a range of age
+{% endblock %}
+
+{% block pageTitle %}
+    Statistics for this range ({{ minAge }} to {{ maxAge }}) years old :
+{% endblock %}
+
+{% block body %}
+    <p>Average age is : {{ avgAge }}</p>
+    <p>Number of persons in this range : {{ nbPersons }}</p>
+{% endblock %}
+

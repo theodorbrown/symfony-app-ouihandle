@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            OUIHandle - Home
+        {% endblock %}
+    </title>
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+        <link rel="stylesheet" href="{{ asset('node_modules/bootstrap/dist/css/bootstrap.css') }}">
+    {% endblock %}
+</head>
+<body>
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="custom-menu">
+            <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                <i class="fa fa-bars"></i>
+                <span class="sr-only">Toggle Menu</span>
+            </button>
+        </div>
+        <div class="pl-2 pr-4 pt-5">
+            <h1><a href="{{ path('app_home') }}" class="logo text-decoration-none">OUIHandle</a></h1>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
+                       class="dropdown-toggle text-decoration-none">List of persons</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a class="text-decoration-none" href="{{ path('app_person') }}">Raw list</a>
+                        </li>
+                        <li>
+                            <a class="text-decoration-none" href="{{ path('app_person_filter') }}">Paginated list</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="text-decoration-none" href="{{ path('app_person_stats_age', {minAge: 16, maxAge:35}) }}">Stats by age</a>
+                </li>
+                <li>
+                    <a class="text-decoration-none" href="{{ path('app_person_updatef') }}">Add a person to BD</a>
+                </li>
+            </ul>
+
+            <div class="mb-5">
+                <h3 class="h6">Subscribe for newsletter</h3>
+                <form action="#" class="colorlib-subscribe-form">
+                    <div class="form-group d-flex">
+                        <div class="icon"><span class="icon-paper-plane"></span></div>
+                        <input type="text" class="form-control" placeholder="Enter Email Address">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5 pt-5">
+
+        <h2 class="mb-4">
+            {% block pageTitle %}
+                Welcome to OUIHandle !
+            {% endblock %}
+        </h2>
+        {% embed "session/index.html.twig" %}
+        {% endembed %}
+        <div>
+            {% block body %}
+                <p>Welcome to our Symfony new application ! You visited our app {{ nb }} times, thank you !</p>
+                <p>OUIHandle is a web app which stores data on persons looking forward for a job.</p>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/js/popper.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
+</body>
+</html>

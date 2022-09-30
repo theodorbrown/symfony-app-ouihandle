@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Person's details
+{% endblock %}
+
+{% block pageTitle %}
+    Details of person with id {{ person.id }} :
+{% endblock %}
+
+{% block body %}
+    <p>Firstname : {{ person.firstname }}</p>
+    <p>Lastname : {{ person.lastname }}</p>
+    <p>Age : {{ person.age }}</p>
+    <p>Job {{ person.job }}: </p>
+    <p>Social media : {{ person.profile }}</p>
+    <p>List of hobbies :</p>
+    <ul>
+        {% for h in person.hobbies %}
+            <li>{{ h.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

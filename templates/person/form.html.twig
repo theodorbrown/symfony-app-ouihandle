@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Form add person
+{% endblock %}
+
+{% block pageTitle %}
+    Form add person
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center">
+        <div class="card bg-light p-3 flex-fill" style="max-width: 600px">
+            {{ form_start(form) }}
+
+            {{ form_row(form.firstname) }}
+
+            {{ form_row(form.lastname) }}
+
+            <div class="d-flex justify-content-between">
+                <div style="max-width: 60px">
+                    {{ form_row(form.age) }}
+                </div>
+                <div>
+                    {{ form_row(form.job) }}
+                </div>
+            </div>
+
+            {{ form_row(form.profile) }}
+
+            {{ form_row(form.hobbies) }}
+
+            <div class="text-center">
+                {{ form_rest(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
