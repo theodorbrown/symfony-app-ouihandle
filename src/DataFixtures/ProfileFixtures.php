@@ -12,7 +12,7 @@ class ProfileFixtures extends Fixture
     {
         $profile = new Profile();
         $profile->setName('Instagram');
-        $profile->setUrl('https://www.instagram.com/theodor_brn/');
+        $profile->setUrl('https://www.instagram.com/');
         $manager->persist($profile);
 
         $profile2 = new Profile();

@@ -10,9 +10,10 @@
 
 
 {% block body %}
-    <p class="mb-2">
-        Here is the list of the persons we have in our DB. Feel free to look up for details or even edit or delete a person if information are incorrect.
-    </p>
+    <div class="">
+        <h4> Here is the list of persons we have in our DB.</h4>
+        <h5 class="mb-4">You can look up for details or even edit or delete a person if information are incorrect.</h5>
+    </div>
 
     <div class="card-columns">
         {% for person in persons %}
@@ -21,9 +22,12 @@
                     <h5 class="card-title">{{ person.firstname }} {{ person.lastname }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ person.age }} years old</h6>
                     <p class="card-text">Current job : {{ person.job }}</p>
-                    <a href="{{ path('app_person_get', { id: person.id }) }}" class="card-link">Details</a>
-                    <a href="{{ path('app_person_updatef', { id: person.id}) }}" class="card-link">Edit</a>
-                    <a href="{{ path('app_person_delete', { id: person.id }) }}" class="card-link">Delete</a>
+                    <a href="{{ path('app_person_get', { id: person.id }) }}" class="card-link"><i
+                                class="fa-solid fa-folder-open"></i></a>
+                    <a href="{{ path('app_person_updatef', { id: person.id}) }}" class="card-link"><i
+                                class="fa-solid fa-user-pen"></i></a>
+                    <a href="{{ path('app_person_delete', { id: person.id }) }}" class="card-link"><i
+                                class="fa-solid fa-user-minus"></i></a>
                 </div>
             </div>
         {% endfor %}

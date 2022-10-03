@@ -25,8 +25,13 @@ class HomeController extends AbstractController
         }
         $session->set('nbVisites', $nb);
 
-        $this->addFlash('info', "You are not connected.");
-
+        $user = $this->getUser();
+        if($user){
+            $email = $user->getUserIdentifier();
+            $this->addFlash('info', "You are connected, your email is $email.");
+        } else {
+            $this->addFlash('info', "You are not connected.");
+        }
         return $this->render('base.html.twig', [
             'nb' => $nb
         ]);

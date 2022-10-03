@@ -3,17 +3,27 @@
 namespace App\Controller;
 
 use App\Entity\Person;
+use App\Events\AddPersonEvent;
 use App\Form\PersonType;
+use App\Services\PDFService;
+use App\Services\UploadService;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/person')]
+#[
+    Route('/person'),
+    IsGranted('ROLE_USER')
+]
 class PersonController extends AbstractController
 {
+    public function __construct(private EventDispatcherInterface $evtDispatcher){}
+
     #[Route('/list', name: 'app_person')]
     public function list(ManagerRegistry $mr): Response
     {
@@ -85,7 +95,10 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id<\d+>}', name: 'app_person_delete')]
+    #[
+        Route('/delete/{id<\d+>}', name: 'app_person_delete'),
+        IsGranted('ROLE_ADMIN')
+    ]
     public function remove(ManagerRegistry $mr, Person $person = null) : RedirectResponse {
         if($person){
             $em = $mr->getManager();
@@ -129,12 +142,19 @@ class PersonController extends AbstractController
         ]);
     }
 
-    #[Route('/statsbyages/{minAge}/{maxAge}', name: 'app_person_stats_age')]
-    public function statsByAgeInterval(ManagerRegistry $mr, int $minAge, int $maxAge): Response {
+    #[Route('/statsbyages', name: 'app_person_stats_age')]
+    public function statsByAgeInterval(ManagerRegistry $mr, Request $request): Response {
+
+        $minAge = $request->query->get('minage');
+        $maxAge = $request->query->get('maxage');
+
+        if(!$maxAge && !$minAge) {
+            $minAge = 18;
+            $maxAge = 25;
+        }
 
         $em = $mr->getRepository(Person::class);
         $stats = $em->statsOnAgeInterval($minAge, $maxAge);
-
 
 
         return $this->render('person/stats.html.twig', [
@@ -146,10 +166,14 @@ class PersonController extends AbstractController
     }
 
     #[Route('/updatef/{id?0}', name: 'app_person_updatef')]
-    public function updateF(Person $person = null, ManagerRegistry $mr, Request $req): Response {
+    public function updateF(Person $person = null, ManagerRegistry $mr, Request $req, UploadService $us): Response {
+        $isNew = false;
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         if(!$person){
+            $isNew = true;
             $person = new Person();
+            $person->setCreatedBy($this->getUser());
         }
 
         $form = $this->createForm(PersonType::class, $person);
@@ -157,10 +181,22 @@ class PersonController extends AbstractController
         $form->remove('updatedAt');
         $form->handleRequest($req);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $em = $mr->getManager();
+
+            $pic = $form->get('pic')->getData();
+
+            if ($pic) {
+                $person->setImage($us->uploadImage($pic, $this->getParameter('pics_directory')));
+            }
+
             $em->persist($person);
             $em->flush();
+
+            if($isNew){
+                $evt = new AddPersonEvent($person);
+                $this->evtDispatcher->dispatch($evt, AddPersonEvent::ADD_PERSON_EVENT);
+            }
 
             return $this->redirectToRoute('app_person_get', [
                 'id' => $person->getId()
@@ -170,6 +206,19 @@ class PersonController extends AbstractController
                 'form' => $form->createView()
             ]);
         }
+    }
+
+    #[Route('/pdf/{id}', name: 'app_person_pdf')]
+    public function handlePdf(Person $person = null, PDFService $pdfs){
+
+        $html =  $this->render('person/base-show-one.html.twig', [
+            'person' => $person
+        ]);
+        $pdfs->showPdf($html);
+
+        return new Response(
+            headers:['content-type' => 'application/pdf']
+        );
     }
 
     private function consoleLog($data) {

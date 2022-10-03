@@ -1,0 +1,18 @@
+<p>Firstname : {{ person.firstname }}</p>
+<p>Lastname : {{ person.lastname }}</p>
+<p>Age : {{ person.age }}</p>
+<p>Job : {{ person.job }} </p>
+<p>Social media : {{ person.profile }}</p>
+<p>List of hobbies :</p>
+<ul>
+    {% for h in person.hobbies %}
+        <li>{{ h.name }}</li>
+    {% endfor %}
+</ul>
+
+<span>Created by : </span>
+{% if person.createdBy %}
+    <span>{{ person.createdBy.email }}</span>
+{% else %}
+    <span>unknown</span>
+{% endif %}

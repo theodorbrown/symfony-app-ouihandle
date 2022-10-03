@@ -4,20 +4,17 @@
     <meta charset="UTF-8">
     <title>
         {% block title %}
-            OUIHandle - Home
+            OUIHandle
         {% endblock %}
     </title>
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://kit.fontawesome.com/b5758e40c2.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    {% endblock %}
-
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
         <link rel="stylesheet" href="{{ asset('node_modules/bootstrap/dist/css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}">
     {% endblock %}
 </head>
 <body>
@@ -31,36 +28,59 @@
         </div>
         <div class="pl-2 pr-4 pt-5">
             <h1><a href="{{ path('app_home') }}" class="logo text-decoration-none">OUIHandle</a></h1>
+            {% if app.user %}
+                <div class="mt-2 mb-2 ml-2">
+                    <h3 class="h6">
+                        Hi 👋 {{ app.user.email }}
+                    </h3>
+                </div>
+            {% endif %}
             <ul class="list-unstyled components mb-5">
-                <li class="active">
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
-                       class="dropdown-toggle text-decoration-none">List of persons</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a class="text-decoration-none" href="{{ path('app_person') }}">Raw list</a>
-                        </li>
-                        <li>
-                            <a class="text-decoration-none" href="{{ path('app_person_filter') }}">Paginated list</a>
-                        </li>
+                <li>
+                    <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false"
+                       class="dropdown-toggle text-decoration-none"><i class="fa-solid fa-id-card"></i> Account</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu1">
+                        {% if app.user %}
+                            <li>
+                                <a class="text-decoration-none" href="{{ path('app_logout') }}">Log out</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a class="text-decoration-none" href="{{ path('app_login') }}">Log in</a>
+                            </li>
+                            <li>
+                                <a class="text-decoration-none" href="{{ path('app_register') }}">Register</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </li>
-                <li>
-                    <a class="text-decoration-none" href="{{ path('app_person_stats_age', {minAge: 16, maxAge:35}) }}">Stats by age</a>
-                </li>
-                <li>
-                    <a class="text-decoration-none" href="{{ path('app_person_updatef') }}">Add a person to BD</a>
-                </li>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li class="active">
+                        <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false"
+                           class="dropdown-toggle text-decoration-none"><i class="fa-solid fa-rectangle-list"></i> List
+                            of
+                            persons</a>
+                        <ul class="collapse list-unstyled" id="pageSubmenu2">
+                            <li>
+                                <a class="text-decoration-none" href="{{ path('app_person') }}">Raw list</a>
+                            </li>
+                            <li>
+                                <a class="text-decoration-none" href="{{ path('app_person_filter') }}">Paginated
+                                    list</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="text-decoration-none"
+                           href="{{ path('app_person_stats_age', {minAge: 16, maxAge:35}) }}"><i
+                                    class="fa-solid fa-chart-line"></i> Stats by age</a>
+                    </li>
+                    <li>
+                        <a class="text-decoration-none" href="{{ path('app_person_updatef') }}"><i
+                                    class="fa-solid fa-database"></i> Add a person to BD</a>
+                    </li>
+                {% endif %}
             </ul>
-
-            <div class="mb-5">
-                <h3 class="h6">Subscribe for newsletter</h3>
-                <form action="#" class="colorlib-subscribe-form">
-                    <div class="form-group d-flex">
-                        <div class="icon"><span class="icon-paper-plane"></span></div>
-                        <input type="text" class="form-control" placeholder="Enter Email Address">
-                    </div>
-                </form>
-            </div>
         </div>
     </nav>
 
@@ -74,18 +94,50 @@
         </h2>
         {% embed "session/index.html.twig" %}
         {% endembed %}
-        <div>
-            {% block body %}
-                <p>Welcome to our Symfony new application ! You visited our app {{ nb }} times, thank you !</p>
-                <p>OUIHandle is a web app which stores data on persons looking forward for a job.</p>
-            {% endblock %}
-        </div>
+        {% block body %}
+            <div class="container mt-4">
+                <div class="row bg-light p-3 rounded">
+                    <div class="col-lg-7">
+                        <p>Welcome to our Symfony new application ! You visited our app {{ nb }} times, thank you
+                            !</p>
+
+                        <p>OUIHandle is an application that stores general and personal information about people
+                            (firstname, lastname, CV, motivations...) looking for a job.</p>
+
+                        <p>These people contact OUIHandle to help them in their research and are thus stored in our
+                            database.</p>
+
+                        <p>OUIHandle's job is to match a person with a job offered by one of its partners.</p>
+
+                        <p>For example, if Olivia Stone wishes to become a designer in a start-up, then OUIHandle
+                            will try to find a position among its partners that could correspond to her.</p>
+
+                        <p>If you are an employee of OUIHandle, you can log in and begin to help people!</p>
+
+                        <p>If you are a candidate, and you want to be added to our DB or deleted from our DB please
+                            contact us via email : ouihandle@contact-handle.com</p>
+                    </div>
+                    <div class="col-lg-5">
+                        <image src="{{ asset('assets/images/teamwork.jpg') }}"
+                               class="img-fluid img-thumbnail"></image>
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="height: 30vh">
+            </div>
+                <p class="text-muted text-center">Proudly developped by Theodor Brown with ❤</p>
+        {% endblock %}
     </div>
 </div>
+</div>
 
-<script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+<script src="{{ asset('node_modules/jquery/dist/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/js/popper.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="{{ asset('node_modules/select2/dist/js/select2.min.js') }}"></script>
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
 </body>
 </html>

@@ -5,11 +5,35 @@
 {% endblock %}
 
 {% block pageTitle %}
-    Statistics for this range ({{ minAge }} to {{ maxAge }}) years old :
+    Statistics for a range of age :
 {% endblock %}
 
 {% block body %}
-    <p>Average age is : {{ avgAge }}</p>
-    <p>Number of persons in this range : {{ nbPersons }}</p>
+    <h5>Choose a range with the inputs.</h5>
+    <div class="text-center bg-light rounded p-2 m-5">
+        <p class="font-weight-bold">The average age is : {{ avgAge }}</p>
+        <p class="font-weight-bold">There are {{ nbPersons }} people in that range. (from {{ minAge }} to {{ maxAge }} years old)</p>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="card bg-light p-3 flex-fill" style="max-width: 600px">
+            <form method="get">
+                <div class="form-group">
+                    <label for="minage">Min age</label>
+                    <input type="number" class="form-control" id="minage" name="minage" aria-describedby="Min age"
+                           placeholder="Enter minimum age">
+                    <small id="Min age" class="form-text text-muted">Min value is 1.</small>
+                </div>
+                <div class="form-group">
+                    <label for="maxage">Max age</label>
+                    <input type="number" class="form-control" id="maxage" name="maxage" aria-describedby="Max age"
+                           placeholder="Enter maximum age">
+                    <small id="Max age" class="form-text text-muted">Max value is 100.</small>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
 

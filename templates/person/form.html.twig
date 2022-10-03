@@ -1,38 +1,81 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Form add person
+    Add a person
 {% endblock %}
 
 {% block pageTitle %}
-    Form add person
+    Add a person :
 {% endblock %}
 
 {% block body %}
+    <a class="btn btn-secondary btn-sm mb-2" href="{{ path('app_person_filter') }}">Go back</a>
+
     <div class="d-flex justify-content-center">
         <div class="card bg-light p-3 flex-fill" style="max-width: 600px">
-            {{ form_start(form) }}
+            {{ form_start(form, {'attr': { 'novalidate': 'novalidate' }}) }}
 
             {{ form_row(form.firstname) }}
 
             {{ form_row(form.lastname) }}
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-around">
                 <div style="max-width: 60px">
-                    {{ form_row(form.age) }}
+                    {{ form_label(form.age) }}
+                    {{ form_widget(form.age, {'attr': { 'style': 'min-width:100px' }}) }}
                 </div>
                 <div>
-                    {{ form_row(form.job) }}
+                    <div>
+                        {{ form_label(form.job) }}
+                    </div>
+                    <div>
+                        {{ form_widget(form.job) }}
+                    </div>
                 </div>
             </div>
 
-            {{ form_row(form.profile) }}
+            <div class="ml-5">
+                {{ form_errors(form.age) }}
+            </div>
+            <div class="mt-2">
+                {{ form_row(form.description) }}
+            </div>
+            <div>
+                {{ form_row(form.profile) }}
+            </div>
+            {{ form_label(form.hobbies, 'Hobbies') }}
+            <div class="overflow-auto border p-1" style="max-height: 150px; background-color: white">
+                {{ form_row(form.hobbies) }}
+            </div>
 
-            {{ form_row(form.hobbies) }}
+            <div class="mt-4">
+                {{ form_label(form.pic) }}
+            </div>
 
-            <div class="text-center">
+            {% if form.vars.value.image is not null %}
+                <div class="text-center">
+                    <img class="img-thumbnail" style="max-height: 200px; max-width: 200px"
+                         src="{{ asset('uploads/pics/' ~ form.vars.value.image) }}" alt="Profile pic">
+                </div>
+            {% else %}
+                <p>No picture provided yet</p>
+            {% endif %}
+            <div class="mt-3">
+                {{ form_widget(form.pic) }}
+                {{ form_errors(form.pic) }}
+            </div>
+
+            <div class="text-center mt-4">
                 {{ form_rest(form) }}
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
 {% endblock %}

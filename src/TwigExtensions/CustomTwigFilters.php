@@ -16,7 +16,7 @@ class CustomTwigFilters extends AbstractExtension
 
     public function defaultImage(string $path): string {
         if(strlen(trim($path)) == 0){
-            return 'as.jpg';
+            return 'teamwork.jpg';
         }
         return $path;
     }

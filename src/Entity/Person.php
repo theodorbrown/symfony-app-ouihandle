@@ -6,7 +6,9 @@ use App\Repository\PersonRepository;
 use App\Traits\TimeStampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -20,12 +22,15 @@ class Person
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'You must provide a firstname')]
     private ?string $firstname = null;
 
+    #[Assert\NotBlank(message: 'You must provide a lastname')]
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
     #[ORM\Column]
+    #[Assert\GreaterThan(0, message: 'You must provide a valid age')]
     private ?int $age = null;
 
     #[ORM\OneToOne(inversedBy: 'person', cascade: ['persist', 'remove'])]
@@ -36,6 +41,15 @@ class Person
 
     #[ORM\ManyToOne]
     private ?Job $job = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    #[ORM\ManyToOne(inversedBy: 'createdPeople')]
+    private ?User $createdBy = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -127,6 +141,42 @@ class Person
     public function setJob(?Job $job): self
     {
         $this->job = $job;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
