@@ -22,7 +22,9 @@ use Symfony\Component\Routing\Annotation\Route;
 ]
 class PersonController extends AbstractController
 {
-    public function __construct(private EventDispatcherInterface $evtDispatcher){}
+    public function __construct(private EventDispatcherInterface $evtDispatcher)
+    {
+    }
 
     #[Route('/list', name: 'app_person')]
     public function list(ManagerRegistry $mr): Response
@@ -30,7 +32,7 @@ class PersonController extends AbstractController
         $repo = $mr->getRepository(Person::class);
         $persons = $repo->findAll();
 
-        return $this->render('person/index.html.twig', [
+        return $this->render('person/search.html.twig', [
             'persons' => $persons
         ]);
     }
@@ -46,7 +48,7 @@ class PersonController extends AbstractController
         //form treats request
         $form->handleRequest($req);
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             //ObjectManager
             $em = $mr->getManager();
             $em->persist($person);
@@ -65,7 +67,7 @@ class PersonController extends AbstractController
     #[Route('/get/{id<\d+>}', name: 'app_person_get')]
     public function getById(Person $person = null): Response
     {
-        if(!$person){
+        if (!$person) {
             $this->addFlash('error', "This person doesn't exist");
             return $this->redirectToRoute('app_person');
         }
@@ -83,7 +85,7 @@ class PersonController extends AbstractController
         $nbPersons = $repo->count([]);
         $nbPages = ceil($nbPersons / $nb);
 
-        if(!$persons){
+        if (!$persons) {
             $this->addFlash('error', "No entry found.");
         }
 
@@ -99,8 +101,9 @@ class PersonController extends AbstractController
         Route('/delete/{id<\d+>}', name: 'app_person_delete'),
         IsGranted('ROLE_ADMIN')
     ]
-    public function remove(ManagerRegistry $mr, Person $person = null) : RedirectResponse {
-        if($person){
+    public function remove(ManagerRegistry $mr, Person $person = null): RedirectResponse
+    {
+        if ($person) {
             $em = $mr->getManager();
             $em->remove($person);
 
@@ -115,8 +118,9 @@ class PersonController extends AbstractController
     }
 
     #[Route('/update/{id<\d+>}/{firstname}', name: 'app_person_update')]
-    public function update(Person $person = null, ManagerRegistry $mr, int $id, string $firstname): Response {
-        if ($person){
+    public function update(Person $person = null, ManagerRegistry $mr, int $id, string $firstname): Response
+    {
+        if ($person) {
             $person->setFirstname($firstname);
             $em = $mr->getManager();
             //persist makes a dif between add and update, thanks to the id
@@ -132,23 +136,25 @@ class PersonController extends AbstractController
     }
 
     #[Route('/filterbyages/{minAge}/{maxAge}', name: 'app_person_filter_age')]
-    public function filterByAgeInterval(ManagerRegistry $mr, int $minAge, int $maxAge): Response {
+    public function filterByAgeInterval(ManagerRegistry $mr, int $minAge, int $maxAge): Response
+    {
 
         $em = $mr->getRepository(Person::class);
         $persons = $em->filterByAgeInterval($minAge, $maxAge);
 
-        return $this->render('person/index.html.twig', [
+        return $this->render('person/search.html.twig', [
             'persons' => $persons
         ]);
     }
 
     #[Route('/statsbyages', name: 'app_person_stats_age')]
-    public function statsByAgeInterval(ManagerRegistry $mr, Request $request): Response {
+    public function statsByAgeInterval(ManagerRegistry $mr, Request $request): Response
+    {
 
         $minAge = $request->query->get('minage');
         $maxAge = $request->query->get('maxage');
 
-        if(!$maxAge && !$minAge) {
+        if (!$maxAge && !$minAge) {
             $minAge = 18;
             $maxAge = 25;
         }
@@ -166,11 +172,12 @@ class PersonController extends AbstractController
     }
 
     #[Route('/updatef/{id?0}', name: 'app_person_updatef')]
-    public function updateF(Person $person = null, ManagerRegistry $mr, Request $req, UploadService $us): Response {
+    public function updateF(Person $person = null, ManagerRegistry $mr, Request $req, UploadService $us): Response
+    {
         $isNew = false;
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        if(!$person){
+        if (!$person) {
             $isNew = true;
             $person = new Person();
             $person->setCreatedBy($this->getUser());
@@ -181,7 +188,7 @@ class PersonController extends AbstractController
         $form->remove('updatedAt');
         $form->handleRequest($req);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $mr->getManager();
 
             $pic = $form->get('pic')->getData();
@@ -193,7 +200,7 @@ class PersonController extends AbstractController
             $em->persist($person);
             $em->flush();
 
-            if($isNew){
+            if ($isNew) {
                 $evt = new AddPersonEvent($person);
                 $this->evtDispatcher->dispatch($evt, AddPersonEvent::ADD_PERSON_EVENT);
             }
@@ -209,19 +216,21 @@ class PersonController extends AbstractController
     }
 
     #[Route('/pdf/{id}', name: 'app_person_pdf')]
-    public function handlePdf(Person $person = null, PDFService $pdfs){
+    public function handlePdf(Person $person = null, PDFService $pdfs)
+    {
 
-        $html =  $this->render('person/base-show-one.html.twig', [
+        $html = $this->render('person/base-show-one.html.twig', [
             'person' => $person
         ]);
         $pdfs->showPdf($html);
 
         return new Response(
-            headers:['content-type' => 'application/pdf']
+            headers: ['content-type' => 'application/pdf']
         );
     }
 
-    private function consoleLog($data) {
+    private function consoleLog($data)
+    {
         $output = $data;
         if (is_array($output))
             $output = implode(',', $output);

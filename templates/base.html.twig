@@ -55,20 +55,9 @@
                     </ul>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <li class="active">
-                        <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false"
-                           class="dropdown-toggle text-decoration-none"><i class="fa-solid fa-rectangle-list"></i> List
-                            of
-                            persons</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu2">
-                            <li>
-                                <a class="text-decoration-none" href="{{ path('app_person') }}">Raw list</a>
-                            </li>
-                            <li>
-                                <a class="text-decoration-none" href="{{ path('app_person_filter') }}">Paginated
-                                    list</a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a class="text-decoration-none" href="{{ path('app_person_filter') }}"><i class="fa-solid fa-rectangle-list"></i> Paginated
+                            list</a>
                     </li>
                     <li>
                         <a class="text-decoration-none"
@@ -125,7 +114,7 @@
             </div>
             <div class="container" style="height: 30vh">
             </div>
-                <p class="text-muted text-center">Proudly developped by Theodor Brown with ❤</p>
+            <p class="text-muted text-center">Proudly developped by Theodor Brown with ❤</p>
         {% endblock %}
     </div>
 </div>

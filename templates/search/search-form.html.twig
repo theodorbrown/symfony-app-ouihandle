@@ -1,0 +1,10 @@
+{{ form_start(form,{'method': 'POST', 'action': '/search' })}}
+<div class="text-right">
+    <div class="d-inline-flex">
+        {{ form_widget(form.Filter) }}
+    </div>
+    <div class="d-inline-flex">
+        {{ form_row(form.Search) }}
+    </div>
+</div>
+{{ form_rest(form) }}

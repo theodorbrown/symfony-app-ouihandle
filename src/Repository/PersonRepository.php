@@ -59,4 +59,13 @@ class PersonRepository extends ServiceEntityRepository
             ->setParameter('ageMax', $ageMax)
             ->orderBy('p.id', 'ASC');
     }
+
+    public function search($keyword)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->orWhere('p.firstname LIKE :keyword OR p.lastname LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%');
+
+        return $qb->getQuery()->getResult();
+    }
 }

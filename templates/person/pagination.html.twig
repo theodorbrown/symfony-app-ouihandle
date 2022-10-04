@@ -15,6 +15,10 @@
         <h5 class="mb-4">You can look up for details or even edit or delete a person if information are incorrect.</h5>
     </div>
 
+    <div>
+        {{ render(path('app_search')) }}
+    </div>
+
     <div class="card-columns">
         {% for person in persons %}
             <div class="card" style="width: 18rem;">
